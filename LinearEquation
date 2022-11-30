@@ -1,0 +1,69 @@
+public class LinearEquation {
+final private double a;
+final private double b;
+final private double c;
+final private double d;
+final private double e;
+final private double f;
+final private boolean isSolvable;
+final private Double x;
+final private Double y;
+
+public LinearEquation(double a, double b, double c, double d, double e, double f) {
+this.a = a;
+this.b = b;
+this.c = c;
+this.d = d;
+this.e = e;
+this.f = f;
+final double denom = (a * d - b * c);
+isSolvable = (denom != 0);
+if (isSolvable) {
+x = (e * d - b * f) / denom;
+y = (a * f - e * c) / denom;
+} else {
+x = null;
+y = null;
+}
+}
+
+public LinearEquation(double[] p) {
+this(p[0], p[1], p[2], p[3], p[4], p[5]);
+}
+
+public double getA() {
+return a;
+}
+
+public double getB() {
+return b;
+}
+
+public double getC() {
+return c;
+}
+
+public double getD() {
+return d;
+}
+
+public double getE() {
+return e;
+}
+
+public double getF() {
+return f;
+}
+
+public boolean isSolvable() {
+return isSolvable;
+}
+
+public Double getX() {
+return x;
+}
+
+public Double getY() {
+return y;
+}
+}
