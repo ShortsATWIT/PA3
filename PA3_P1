@@ -1,0 +1,177 @@
+import java.util.function.BiPredicate;
+public class Pa3_P1 {
+
+public static final String ERR_USAGE = "Please supply at least one argument at the command line."; // DO NOT CHANGE
+
+public static final char QUOTE_CHAR_OPEN = '<'; // DO NOT CHANGE
+
+public static final char QUOTE_CHAR_CLOSE = '>'; // DO NOT CHANGE
+
+private static int lengthSuperlative(String[] a, boolean shortest) {
+int rLen = a[0].length();
+for (int i=1; i<a.length; i++) {
+final int sLen = a[i].length();
+if ((shortest && sLen<rLen) || (!shortest && sLen>rLen)) {
+rLen = sLen;
+}
+}
+return rLen;
+}
+@SuppressWarnings("unused")
+private static int lengthSuperlative(String[] a, BiPredicate<Integer, Integer> f) {
+int rLen = a[0].length();
+for (int i=1; i<a.length; i++) {
+final int sLen = a[i].length();
+if (f.test(sLen, rLen)) {
+rLen = sLen;
+}
+}
+return rLen;
+}
+
+private static String findShortest(String[] a, boolean first) {
+return (a.length==0)?null:findOfLength(a, lengthSuperlative(a, true), first);
+}
+
+public static String firstShortestElement(String[] a) {
+
+return findShortest(a, true);
+}
+
+public static String lastShortestElement(String[] a) {
+
+return findShortest(a, false);
+}
+
+private static String findLongest(String[] a, boolean first) {
+return (a.length==0)?null:findOfLength(a, lengthSuperlative(a, false), first);
+
+}
+
+public static String firstLongestElement(String[] a) {
+
+return findLongest(a, true);
+}
+
+public static String lastLongestElement(String[] a) {
+
+return findLongest(a, false);
+}
+
+private static String findOfLength(String[] a, int len, boolean first) {
+final int start;
+final int end;
+final int inc;
+if (first) {
+start = 0;
+end = a.length;
+inc = 1;
+} else {
+start = a.length-1;
+end = -1;
+inc = -1;
+}
+for (int i=start; i!=end; i+=inc) {
+final String s = a[i];
+if (s.length() == len) {
+return s;
+}
+}
+return null;
+}
+
+public static String firstOfLength(String[] a, int len) {
+
+return findOfLength(a, len, true);
+}
+
+public static String lastOfLength(String[] a, int len) {
+
+return findOfLength(a, len, false);
+}
+
+public static int sumOfElementLengths(String[] a) {
+int ret = 0;
+for (String s : a) {
+ret += s.length();
+}
+return ret;
+
+}
+
+public static int averageAsInt(int sum, int count) {
+return (int) Math.round((double) sum / count);
+}
+
+public static boolean hasDuplicates(String[] a) {
+for (int i=0; i<(a.length-1); i++) {
+final String outer = a[i];
+for (int j=(i+1); j<a.length; j++) {
+if (outer.equals(a[j])) {
+return true;
+}
+}
+}
+return false;
+}
+
+public static String flexibleQuote(String s, char cOpen, char cClose) {
+return String.format("%c%s%c", cOpen, s, cClose);
+}
+
+public static String oneOrBothOrNone(String sFirst, String sLast, char cOpen, char cClose) {
+if (sFirst == null && sLast == null) {
+return "none";
+} else if (sFirst == null) {
+return flexibleQuote(sLast, cOpen, cClose);
+} else if (sLast == null) {
+return flexibleQuote(sFirst, cOpen, cClose);
+} else if (sFirst == sLast) {
+return flexibleQuote(sFirst, cOpen, cClose);
+} else {
+return String.format("first=%s, last=%s", flexibleQuote(sFirst, cOpen, cClose), flexibleQuote(sLast, cOpen, cClose));
+}
+}
+
+public static void printWithSeparator(String[] a, String sBefore, String sSep, String sAfter) {
+System.out.printf("%s", sBefore);
+if (a.length>0) {
+System.out.printf(a[0]);
+for (int i=1; i<a.length; i++) {
+System.out.printf("%s%s", sSep, a[i]);
+}
+}
+System.out.printf("%s", sAfter);
+}
+
+public static boolean validArgs(String[] args) {
+return (args.length != 0);
+}
+
+public static void main(String[] args) {
+
+if (!validArgs(args)) {
+System.out.printf("%s%n", ERR_USAGE);
+System.exit(1);
+}
+
+System.out.printf("Arguments (%d, %s duplication):", args.length, (hasDuplicates(args))?("has"):("no"));
+printWithSeparator(args, " ", " ", String.format("%n"));
+
+final int lSum = sumOfElementLengths(args);
+final int lAvg = averageAsInt(lSum, args.length);
+System.out.printf("Length: total=%d, avg=%d%n", lSum, lAvg);
+
+final String fShortest = firstShortestElement(args);
+final String lShortest = lastShortestElement(args);
+System.out.printf("Shortest (%d): %s%n", fShortest.length(), oneOrBothOrNone(fShortest, lShortest, QUOTE_CHAR_OPEN, QUOTE_CHAR_CLOSE));
+
+final String fLongest = firstLongestElement(args);
+final String lLongest = lastLongestElement(args);
+System.out.printf("Longest (%d): %s%n", fLongest.length(), oneOrBothOrNone(fLongest, lLongest, QUOTE_CHAR_OPEN, QUOTE_CHAR_CLOSE));
+
+final String fAverage = firstOfLength(args, lAvg);
+final String lAverage = lastOfLength(args, lAvg);
+System.out.printf("Average (%d): %s%n", lAvg, oneOrBothOrNone(fAverage, lAverage, QUOTE_CHAR_OPEN, QUOTE_CHAR_CLOSE));
+}
+}
