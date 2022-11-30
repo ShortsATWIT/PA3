@@ -1,0 +1,34 @@
+public class Pa3_P2 {
+	public static final String ERR_USAGE = "Please supply 6 numbers (a-f).";
+	
+	public static final String ERR_NOSLTN = "The equation has no solution.";
+	
+	public static final int NUM_PARAMS = 6;
+	
+	public static double[] validateArgs(String[] args) {
+	try {
+	if (args.length == NUM_PARAMS) {
+	double[] params = new double[NUM_PARAMS];
+	for (int i=0; i<params.length; i++) {
+	params[i] = Double.valueOf(args[i]);
+	}
+	return params;
+	}
+	} catch (NumberFormatException e) {
+	}
+	return null;
+	}
+	public static void main(String[] args) {
+	double[] p = validateArgs(args);
+	if (p == null) {
+	System.out.printf("%s%n", ERR_USAGE);
+	System.exit(1);
+	}
+	final LinearEquation leq = new LinearEquation(p);
+	if (leq.isSolvable()) {
+	System.out.printf("Solution: x=%.3f, y=%.3f%n", leq.getX(), leq.getY());
+	} else {
+	System.out.printf("%s%n", ERR_NOSLTN);
+	}
+	}
+	}
